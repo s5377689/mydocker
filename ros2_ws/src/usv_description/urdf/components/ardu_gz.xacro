@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="ardu_gz">
+        <gazebo>
+            <plugin filename="ArduPilotPlugin" name="ArduPilotPlugin">
+                <!-- Port settings -->
+                <fdm_addr>127.0.0.1</fdm_addr>
+                <fdm_port_in>$(arg fdm_port_in)</fdm_port_in>
+                <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+                <lock_step>1</lock_step>
+
+                <!-- Frame conventions required by ArduPilot: change model and gazebo from XYZ to XY-Z coordinates -->
+                <!-- Gazebo versus ArduPilot frame conventions
+                     =========================================
+
+                     1. ArduPilot assumes an aircraft convention for body and world frames:
+
+                         ArduPilot world frame is: x-north, y-east, z-down (NED)
+                         ArduPilot body frame is:  x-forward, y-right, z-down
+
+                     2. The Gazebo frame convention is:
+
+                         Gazebo world frame is:    x-east, y-north, z-up (ENU)
+                         Gazebo body frame is:     x-forward, y-left, z-up -->
+                <!-- gz::math::Pose3d wldAToBdyA = wldAToWldG * wldGToBdyG * bdyAToBdyG.Inverse(); -->
+                <!-- bdyAToBdyG -->
+                <!-- x-forward, y-right, z-down => x-forward, y-left, z-up -->
+                <modelXYZToAirplaneXForwardZDown degrees="true">0 0 0 180 0 0</modelXYZToAirplaneXForwardZDown>
+                <!-- wldAToWldG -->
+                <!-- x-north, y-east, z-down (NED) => x-east, y-north, z-up (ENU) -->
+                <gazeboXYZToNED degrees="true">0 0 0 180 0 90</gazeboXYZToNED>
+
+                <!-- Sensors -->
+                <imuName>imu_sensor</imuName>
+
+                <!-- Controls -->
+                <positive_cmd>false</positive_cmd>
+                <control0>
+                    <jointName>base_left_propeller_joint</jointName>
+                    <useForce>1</useForce>
+                    <!-- multiplier: >0 for cw, <0 for ccw -->
+                    <multiplier>800</multiplier>
+                    <offset>0</offset>
+                    <servo_min>1000</servo_min>
+                    <servo_max>2000</servo_max>
+                    <type>COMMAND</type>
+                    <!-- cmd_vel: control angular velocity, cmd_thrust: control wrenches to apply -->
+                    <cmd_topic>/model/$(arg usv_name)/joint/base_left_propeller_joint/cmd_vel</cmd_topic>
+                    <!-- <p_gain>0.20</p_gain>
+                    <i_gain>0</i_gain>
+                    <d_gain>0</d_gain>
+                    <i_max>0</i_max>
+                    <i_min>0</i_min>
+                    <cmd_topic>/model/$(arg usv_name)/joint/base_left_propeller_joint/cmd_thrust</cmd_topic>
+                    <cmd_max>2.5</cmd_max>
+                    <cmd_min>-2.5</cmd_min>
+                    <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim> -->
+                </control0>
+                <control2>
+                    <jointName>base_right_propeller_joint</jointName>
+                    <useForce>1</useForce>
+                    <multiplier>800</multiplier>
+                    <offset>0</offset>
+                    <servo_min>1000</servo_min>
+                    <servo_max>2000</servo_max>
+                    <type>COMMAND</type>
+                    <cmd_topic>/model/$(arg usv_name)/joint/base_right_propeller_joint/cmd_vel</cmd_topic>
+                    <!-- <p_gain>0.20</p_gain>
+                    <i_gain>0</i_gain>
+                    <d_gain>0</d_gain>
+                    <i_max>0</i_max>
+                    <i_min>0</i_min>
+                    <cmd_topic>/model/$(arg usv_name)/joint/base_right_propeller_joint/cmd_vel</cmd_topic>
+                    <cmd_max>2.5</cmd_max>
+                    <cmd_min>-2.5</cmd_min>
+                    <controlVelocitySlowdownSim>1</controlVelocitySlowdownSim> -->
+                </control2>
+            </plugin>
+        </gazebo>
+    </xacro:macro>
+</robot>

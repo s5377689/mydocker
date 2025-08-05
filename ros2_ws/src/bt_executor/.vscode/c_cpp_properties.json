@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "${default}",
+                "limitSymbolsToIncludedHeaders": false
+            },
+            "includePath": [
+                "/home/robuff/src_codes/robuff_ws/install/custom_msgs/include/**",
+                "/home/bill/src_codes/robuff_ws/install/custom_msgs/include/**",
+                "/home/robuff/src_codes/robuff_ws/src/bt_executor/include/*",
+                "/opt/ros/humble/include/**",
+                "/home/robuff/src_codes/robuff_ws/src/bt_executor/include/**",
+                "/home/bill/src_codes/robuff_ws/src/bt_executor/include/**",
+                "include/**",
+                "include/*",
+                "/usr/include/**",
+                "${workspaceFolder}/include/**",
+                "/home/bill/src_codes/ardu_ws/install/ardupilot_msgs/include/ardupilot_msgs"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "c++14"
+        }
+    ],
+    "version": 4
+}

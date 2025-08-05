@@ -1,0 +1,27 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/robuff/ros_gz_ws/install/ros_ign_interfaces/include/**",
+        "/home/robuff/ros_gz_ws/install/ros_gz_sim/include/**",
+        "/home/robuff/ros_gz_ws/install/ros_gz_bridge/include/**",
+        "/home/robuff/ros_gz_ws/install/ros_gz_interfaces/include/**",
+        "/home/robuff/ardu_ros2_ws/install/micro_ros_agent/include/**",
+        "/home/robuff/ardu_ros2_ws/install/ardupilot_msgs/include/**",
+        "/home/robuff/ros2_ws/install/yolo_msg/include/**",
+        "/opt/ros/humble/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

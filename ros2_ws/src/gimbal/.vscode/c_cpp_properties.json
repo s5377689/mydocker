@@ -1,0 +1,36 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/robuff/src_codes/bt_ws/install/btcpp_ros2_interfaces/include/**",
+        "/home/robuff/src_codes/bt_ws/install/behaviortree_cpp/include/**",
+        "/home/robuff/src_codes/robuff_ws/install/custom_msgs/include/**",
+        "/home/robuff/src_codes/nav2_ws/install/nav2_straightline_planner/include/**",
+        "/home/robuff/src_codes/ros2_ws/install/yolo_msg/include/**",
+        "/home/robuff/src_codes/ros2_ws/install/polygon_plugins/include/**",
+        "/home/robuff/src_codes/ros2_ws/install/polygon_base/include/**",
+        "/home/robuff/src_codes/ardu_ws/install/micro_ros_agent/include/**",
+        "/home/robuff/src_codes/ardu_ws/install/ardupilot_msgs/include/**",
+        "/home/robuff/src_codes/ros_gz_ws/install/ros_ign_interfaces/include/**",
+        "/home/robuff/src_codes/ros_gz_ws/install/ros_gz_sim/include/**",
+        "/home/robuff/src_codes/ros_gz_ws/install/ros_gz_bridge/include/**",
+        "/home/robuff/src_codes/ros_gz_ws/install/ros_gz_interfaces/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/robuff/src_codes/robuff_ws/src/bt_client/include/**",
+        "/home/robuff/src_codes/robuff_ws/src/bt_executor/include/**",
+        "/home/robuff/src_codes/robuff_ws/src/gimbal/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

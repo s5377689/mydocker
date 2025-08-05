@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Hydrodynamics -->
+  <xacro:include filename="$(find usv_description)/urdf/components/physics.xacro"/>
+
+  <!-- State Publishers -->
+  <xacro:include filename="$(find usv_description)/urdf/components/publisher.xacro"/>
+
+  <!-- Sensors -->
+  <xacro:include filename="$(find usv_description)/urdf/components/imu.xacro"/>
+  <xacro:imu link="imu_link"/>
+  <xacro:include filename="$(find usv_description)/urdf/components/camera.xacro"/>
+  <xacro:camera link="camera_link"/>
+  <xacro:include filename="$(find usv_description)/urdf/components/lidar.xacro"/>
+  <xacro:lidar link="camera_link"/>
+
+  <!-- Ardupilot-Gazebo Plugin -->
+  <xacro:include filename="$(find usv_description)/urdf/components/ardu_gz.xacro"/>
+  <xacro:ardu_gz/>
+
+  <!-- Thrusters -->
+  <xacro:include filename="$(find usv_description)/urdf/components/thruster.xacro"/>
+
+  <gazebo reference="base_left_hull_joint">
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
+  <gazebo reference="base_right_hull_joint">
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
+  <gazebo reference="base_camera_joint">
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
+  <gazebo reference="base_imu_joint">
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
+</robot>

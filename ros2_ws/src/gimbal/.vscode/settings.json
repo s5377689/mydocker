@@ -1,0 +1,37 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/robuff/src_codes/bt_ws/install/generate_parameter_library_py/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/bt_ws/install/btcpp_ros2_interfaces/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/robuff_ws/install/topic_tools/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/robuff_ws/install/custom_msgs/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/ros2_ws/install/yolo_msg/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/ros2_ws/install/yolo/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/ros2_ws/install/topic_tools/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/ardu_ws/install/ardupilot_dds_tests/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/ardu_ws/install/ardupilot_sitl/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/ardu_ws/install/ardupilot_msgs/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/ros_gz_ws/install/ros_ign_interfaces/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/ros_gz_ws/install/ros_gz_interfaces/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/robuff/src_codes/bt_ws/install/generate_parameter_library_py/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/bt_ws/install/btcpp_ros2_interfaces/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/robuff_ws/install/topic_tools/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/robuff_ws/install/custom_msgs/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/ros2_ws/install/yolo_msg/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/ros2_ws/install/yolo/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/ros2_ws/install/topic_tools/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/ardu_ws/install/ardupilot_dds_tests/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/ardu_ws/install/ardupilot_sitl/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/ardu_ws/install/ardupilot_msgs/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/ros_gz_ws/install/ros_ign_interfaces/local/lib/python3.10/dist-packages",
+        "/home/robuff/src_codes/ros_gz_ws/install/ros_gz_interfaces/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "files.associations": {
+        "cstdint": "cpp"
+    }
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>my_gimbal_app</name>
+  <version>0.0.0</version>
+  <description>Example package using gimbal components</description>
+  <maintainer email="you@example.com">Your Name</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Depend on your gimbal package -->
+  <depend>gimbal</depend>
+  <depend>rclcpp</depend>
+
+  <!-- Note: You don't need to explicitly depend on OpenCV, Qt5, etc. 
+       because they are transitively provided by the gimbal package -->
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

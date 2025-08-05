@@ -1,0 +1,22 @@
+{
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
+    "files.associations": {
+        "qstring": "cpp",
+        "qlist": "cpp",
+        "qdomdocument": "cpp"
+    },
+    "python.autoComplete.extraPaths": [
+        "/home/robuff/src_codes/robuff_ws/install/usv_helpers/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/robuff_ws/install/topic_tools/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/robuff_ws/install/custom_msgs/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/robuff/src_codes/robuff_ws/install/usv_helpers/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/robuff_ws/install/topic_tools/lib/python3.10/site-packages",
+        "/home/robuff/src_codes/robuff_ws/install/custom_msgs/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}

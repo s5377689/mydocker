@@ -1,0 +1,27 @@
+{
+    "ros.distro": "humble",
+    "python.autoComplete.extraPaths": [
+        "/home/robuff/ros_gz_ws/install/ros_ign_interfaces/local/lib/python3.10/dist-packages",
+        "/home/robuff/ros_gz_ws/install/ros_gz_interfaces/local/lib/python3.10/dist-packages",
+        "/home/robuff/ardu_ros2_ws/install/ardupilot_dds_tests/lib/python3.10/site-packages",
+        "/home/robuff/ardu_ros2_ws/install/ardupilot_sitl/local/lib/python3.10/dist-packages",
+        "/home/robuff/ardu_ros2_ws/install/ardupilot_msgs/local/lib/python3.10/dist-packages",
+        "/home/robuff/ros2_ws/install/yolo_msg/local/lib/python3.10/dist-packages",
+        "/home/robuff/ros2_ws/install/yolo/lib/python3.10/site-packages",
+        "/home/robuff/robuff_ws/install/usv_helpers/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/robuff/ros_gz_ws/install/ros_ign_interfaces/local/lib/python3.10/dist-packages",
+        "/home/robuff/ros_gz_ws/install/ros_gz_interfaces/local/lib/python3.10/dist-packages",
+        "/home/robuff/ardu_ros2_ws/install/ardupilot_dds_tests/lib/python3.10/site-packages",
+        "/home/robuff/ardu_ros2_ws/install/ardupilot_sitl/local/lib/python3.10/dist-packages",
+        "/home/robuff/ardu_ros2_ws/install/ardupilot_msgs/local/lib/python3.10/dist-packages",
+        "/home/robuff/ros2_ws/install/yolo_msg/local/lib/python3.10/dist-packages",
+        "/home/robuff/ros2_ws/install/yolo/lib/python3.10/site-packages",
+        "/home/robuff/robuff_ws/install/usv_helpers/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}

@@ -1,0 +1,7 @@
+string xml_text
+---
+bool success
+string message
+---
+string running_node
+string message
