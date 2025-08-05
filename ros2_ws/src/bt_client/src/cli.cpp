@@ -158,7 +158,7 @@ void BtClient::request_cancel()
             }
 
             if (!response->goals_canceling.empty()) {
-                RCLCPP_INFO(rclcpp::get_logger("bt_client"), "Mission canceled successfully.");
+                RCLCPP_INFO(rclcpp::get_logger("bt_client"), "Mission cancelled successfully.");
             } else {
                 RCLCPP_ERROR(rclcpp::get_logger("bt_client"), "Failed to cancel the mission.");
             }

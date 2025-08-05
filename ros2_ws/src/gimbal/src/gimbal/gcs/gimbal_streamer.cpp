@@ -152,6 +152,7 @@ void GimbalStreamer::captureLoop()
     av_image_alloc(dst_data, dst_linesize, width, height, AV_PIX_FMT_BGR24, 1);
 
     connected_ = true;
+    emit connectionChanged();
     std::cout << "[GimbalStreamer] Successfully connected to the camera.\n";
 
     int publish_interval = 1000 / publish_rate_;
@@ -162,6 +163,7 @@ void GimbalStreamer::captureLoop()
         if (av_read_frame(format_ctx, packet) < 0) {
             std::cerr << "[GimbalStreamer] Failed to read frame.\n";
             connected_ = false;
+            emit connectionChanged();
             break;
         }
 
@@ -186,7 +188,7 @@ void GimbalStreamer::captureLoop()
 
                     // Update the image provider for display in GUI
                     if (img_provider_) {
-                        QImage qimg = gimbal::mat_to_qimage(bgr);
+                        QImage qimg = mat_to_qimage(bgr);
                         img_provider_->update_image(qimg);
                     }
                 }
@@ -215,7 +217,30 @@ void GimbalStreamer::captureLoop()
     avformat_close_input(&format_ctx);
     sws_freeContext(sws_ctx);
     connected_ = false;
+    emit connectionChanged();
     std::cout << "[GimbalStreamer] Capture thread exited.\n";
 }
+
+QImage GimbalStreamer::mat_to_qimage(
+    const cv::Mat & mat)
+{
+    if (mat.type() == CV_8UC3)
+        return QImage(
+            mat.data,
+            mat.cols,
+            mat.rows,
+            mat.step,
+            QImage::Format_BGR888).copy();
+    else if (mat.type() == CV_8UC1)
+            return QImage(
+                mat.data,
+                mat.cols,
+                mat.rows,
+                mat.step,
+                QImage::Format_Grayscale8).copy();
+    else
+        throw std::runtime_error("Unsupported cv::Mat type for conversion to QImage");
+}
+
 
 }  // namespace gimbal::gcs

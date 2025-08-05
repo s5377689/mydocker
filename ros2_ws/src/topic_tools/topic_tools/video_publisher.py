@@ -10,7 +10,7 @@ class VideoPublisher(Node):
     def __init__(self):
         super().__init__('video_publisher')
         self.image_topic = self.declare_parameter('image_topic', '/camera/image_raw').value
-        self.video_path = self.declare_parameter('video_path', '/home/robuff/data/ship-videos/test.avi').value
+        self.video_path = self.declare_parameter('video_path', '/home/robuff/data/datasets/ship-videos/test.avi').value
         self.loop = self.declare_parameter('loop', True).value
         self.video_pub = self.create_publisher(
             Image,

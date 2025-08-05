@@ -395,10 +395,10 @@ void GimbalController::parseAndStoreZoomLevel(const std::vector<uint8_t> & packe
     // std::cout << "gimbal_status_.zoom: " << gimbal_status_.zoom << std::endl;
 }
 
-void GimbalController::updateBBox(cv::Rect bbox)
+void GimbalController::update_lockon_bbox(cv::Rect bbox)
 {
-    std::lock_guard<std::mutex> lock(current_bbox_mutex_);
-    current_bbox_ = bbox;
+    std::lock_guard<std::mutex> lock(lockon_bbox_mutex_);
+    lockon_bbox_ = bbox;
 }
 
 // =============================================
@@ -432,8 +432,10 @@ void GimbalController::actionLoop()
         auto action = current_action_;
         lock.unlock();
 
-        if (action)
+        if (action) {
+            std::cout << "[GimbalController] Running action: " << action->getName() << std::endl;
             action->run();
+        }
         
         lock.lock();
         // If the action was interrupted or halted, reset current_action_

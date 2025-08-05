@@ -1,4 +1,4 @@
-#include "ros_bridge.h"
+#include "ros_bridge.hpp"
 
 RosBridge::RosBridge(QObject* parent):
     QObject(parent)

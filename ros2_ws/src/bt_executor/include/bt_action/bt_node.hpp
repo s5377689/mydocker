@@ -8,8 +8,11 @@
 #include <string>
 #include <thread>
 #include <atomic>
+#include <memory>
 #include <behaviortree_cpp/bt_factory.h>
 #include <rclcpp/rclcpp.hpp>
+#include "rclcpp_action/rclcpp_action.hpp"
+#include "custom_msgs/action/behavior_tree.hpp"
 
 namespace bt_action
 {
@@ -18,6 +21,9 @@ class BtNode :
     public BT::StatefulActionNode, public rclcpp::Node
 {
 public:
+    using ActionT = custom_msgs::action::BehaviorTree;
+    using GoalHandle = rclcpp_action::ServerGoalHandle<ActionT>;
+
     // To create a BtNode, you need to implement the following 3 methods:
     // 1. As a BT::StateFulActionNode, the following constructor is required:
     // <Class Constructor>(
@@ -31,6 +37,13 @@ public:
         const BT::NodeConfiguration & config
     );
     ~BtNode();
+
+    // result_msg will be printed out by the mission server
+    // goal_handle is used to publish the feedback message
+    void baseInitialize(
+        std::shared_ptr<std::string> result_msg,
+        std::shared_ptr<GoalHandle> goal_handle
+    );
 
     // 2. As a BT::StatefulActionNode, input ports are required:
     // static BT::PortsList providedPorts() { return {}; }
@@ -48,6 +61,9 @@ protected:
     std::thread action_thread_;
     std::atomic<BT::NodeStatus> status_ {BT::NodeStatus::IDLE};
     std::atomic<bool> halt_requested_ {false};
+
+    std::shared_ptr<std::string> result_msg_;
+    std::shared_ptr<GoalHandle> goal_handle_;
 };
 
 }  // namespace bt_action

@@ -5,11 +5,11 @@ import QtQuick.Window
 
 Item {
     id: gimbalControlPanel
-    property var gimbalStreamer
-    property var gimbalController
-    property var ros2TopicSubscriber
-    property bool streamerConnected: gimbalStreamer.isConnected()
-    property bool controllerConnected: gimbalController.isConnected()
+    property var gimbalStreamerRef: null
+    property var gimbalControllerRef: null
+    property var ros2TopicSubscriberRef: null
+    property bool controllerConnected: gimbalControllerRef.connected
+    property bool streamerConnected: gimbalStreamerRef.connected
     property string imageSource: "gimbal"  // or "ros2"
 
     property color themeColor: "#2b2b2b"
@@ -63,7 +63,7 @@ Item {
                         anchors.fill: gimbalFrame
                         onClicked: function(mouse) {
                             if (mouse.button === Qt.LeftButton) {
-                                gimbalController.onImageLeftClicked(
+                                gimbalControllerRef.onImageLeftClicked(
                                     mouse.x, mouse.y, gimbalFrame.width, gimbalFrame.height
                                 )
                             }
@@ -126,7 +126,7 @@ Item {
                     //         text: "Rotate To"
                     //         onClicked: {
                     //             // Convert to float or int as needed
-                    //             gimbalController.rotateTo(Number(targetYaw), Number(targetPitch))
+                    //             gimbalControllerRef.rotateTo(Number(targetYaw), Number(targetPitch))
                     //         }
                     //     }
                     // }
@@ -140,19 +140,19 @@ Item {
                             text: "-"
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            onClicked: gimbalController.zoomOut()
+                            onClicked: gimbalControllerRef.zoomOut()
                         }
                         Button {
                             text: "x"
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            onClicked: gimbalController.stopZoom()
+                            onClicked: gimbalControllerRef.stopZoom()
                         }
                         Button {
                             text: "+"
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            onClicked: gimbalController.zoomIn()
+                            onClicked: gimbalControllerRef.zoomIn()
                         }
                     }
 
@@ -169,7 +169,7 @@ Item {
                             text: "↑"
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            onClicked: gimbalController.up(Number(velocity))
+                            onClicked: gimbalControllerRef.up(Number(velocity))
                         }
                         Item {}
 
@@ -178,19 +178,19 @@ Item {
                             text: "←"
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            onClicked: gimbalController.left(Number(velocity))
+                            onClicked: gimbalControllerRef.left(Number(velocity))
                         }
                         Button {
                             text: "x"
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            onClicked: gimbalController.stopRotation()
+                            onClicked: gimbalControllerRef.stopRotation()
                         }
                         Button {
                             text: "→"
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            onClicked: gimbalController.right(Number(velocity))
+                            onClicked: gimbalControllerRef.right(Number(velocity))
                         }
 
                         // Row 3
@@ -199,13 +199,13 @@ Item {
                             text: "↓"
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            onClicked: gimbalController.down(Number(velocity))
+                            onClicked: gimbalControllerRef.down(Number(velocity))
                         }
                         Button {
                             text: "Reset"
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            onClicked: gimbalController.resetPose()
+                            onClicked: gimbalControllerRef.resetPose()
                         } 
                     }
 
@@ -214,7 +214,7 @@ Item {
                         text: velocity
                         onTextChanged: velocity = text
                         inputMethodHints: Qt.ImhFormattedNumbersOnly
-                        Layout.fillWidth: ture
+                        Layout.fillWidth: true
                         Layout.fillHeight: true
                     }                    
                     TextField {
@@ -222,7 +222,7 @@ Item {
                         text: zoom_int
                         onTextChanged: zoom_int = text
                         inputMethodHints: Qt.ImhFormattedNumbersOnly
-                        Layout.fillWidth: ture
+                        Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
                     TextField {
@@ -230,50 +230,55 @@ Item {
                         text: zoom_frac
                         onTextChanged: zoom_frac = text
                         inputMethodHints: Qt.ImhFormattedNumbersOnly
-                        Layout.fillWidth: ture
+                        Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
                     Button {
                         text: "Set Zoom"
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        onClicked: gimbalController.setZoom(Number(zoom_int), Number(zoom_frac))
+                        onClicked: gimbalControllerRef.setZoom(Number(zoom_int), Number(zoom_frac))
                     }
                     // === Gimbal Status ===
                     RowLayout {
                         Rectangle {
-                            Layout.minimumWidth: 140 
-                            Layout.minimumHeight: 80
+                            Layout.preferredWidth: statusText.implicitWidth + 20
+                            Layout.preferredHeight: statusText.implicitHeight + 10
                             color: accentColor
                             radius: 3
 
                             Text {
+                                id: statusText
                                 anchors.top: parent.top
                                 anchors.topMargin: 3 
                                 anchors.left: parent.left
                                 anchors.leftMargin: 5 
-                                text: "Yaw: " + gimbalController.yaw.toFixed(1) +
-                                    "°\nPitch: " + gimbalController.pitch.toFixed(1) +
-                                    "°\nYaw Velocity: " + gimbalController.yaw_velocity.toFixed(1) +
-                                    "°/s\nPitch Velocity: " + gimbalController.pitch_velocity.toFixed(1) +
-                                    "°/s\nZoom Level: " + gimbalController.zoom_level.toFixed(1) + "x"
-                                font.pixelSize: 13
+                                text: "Yaw: " + gimbalControllerRef.yaw.toFixed(1) +
+                                    "°\nPitch: " + gimbalControllerRef.pitch.toFixed(1) +
+                                    "°\nYaw Velocity: " + gimbalControllerRef.yaw_velocity.toFixed(1) +
+                                    "°/s\nPitch Velocity: " + gimbalControllerRef.pitch_velocity.toFixed(1) +
+                                    "°/s\nZoom Level: " + gimbalControllerRef.zoom_level.toFixed(1) + "x"
+                                font.pixelSize: 16
                                 font.bold: true
                                 color: textColor
+                                wrapMode: Text.Wrap
                             }
                         }
                         ColumnLayout {
+                            Layout.alignment: Qt.AlignTop
+                            Layout.leftMargin: 8
+
                             Button {
                                 text: streamerConnected ? "Stream ON" : "Stream OFF"
                                 Layout.alignment: Qt.AlignRight
-                                Layout.preferredWidth: 65
-                                Layout.preferredHeight: 25
+                                Layout.preferredWidth: 85
+                                Layout.preferredHeight: 30
                                 font.bold: true
-                                font.pixelSize: 9
+                                font.pixelSize: 12
                                 background: Rectangle {
-                                    implicitWidth: 65
-                                    implicitHeight: 25
-                                    radius: 15 
+                                    implicitWidth: 85
+                                    implicitHeight: 30
+                                    radius: 10
                                     border.color: streamerConnected ? "#5cafff" : "#ff5c5c"
                                     border.width: 2
                                     gradient: Gradient {
@@ -292,14 +297,12 @@ Item {
                                     }
                                 }
                                 onClicked: {
-                                    if (gimbalStreamer.isConnected()) {
-                                        gimbalStreamer.stop()
-                                        streamerConnected = false
+                                    if (gimbalStreamerRef.connected) {
+                                        gimbalStreamerRef.stop()
                                         imageSource = "none"
                                         console.log("Gimbal Streamer stopped")
                                     } else {
-                                        gimbalStreamer.start()
-                                        streamerConnected = true
+                                        gimbalStreamerRef.start()
                                         imageSource = "gimbal"
                                         console.log("Gimbal Streamer started")
                                     }
@@ -308,14 +311,14 @@ Item {
                             Button {
                                 text: controllerConnected ? "Control ON" : "Control OFF"
                                 Layout.alignment: Qt.AlignRight
-                                Layout.preferredWidth: 65
-                                Layout.preferredHeight: 25
+                                Layout.preferredWidth: 85
+                                Layout.preferredHeight: 30
                                 font.bold: true
-                                font.pixelSize: 9
+                                font.pixelSize: 12
                                 background: Rectangle {
-                                    implicitWidth: 65
-                                    implicitHeight: 25
-                                    radius: 15 
+                                    implicitWidth: 85
+                                    implicitHeight: 30
+                                    radius: 10
                                     border.color: controllerConnected ? "#5cafff" : "#ff5c5c"
                                     border.width: 2
                                     gradient: Gradient {
@@ -334,26 +337,24 @@ Item {
                                     }
                                 }
                                 onClicked: {
-                                    if (gimbalController.isConnected()) {
-                                        gimbalController.stop()
-                                        controllerConnected = false
+                                    if (gimbalControllerRef.connected) {
+                                        gimbalControllerRef.stop()
                                     } else {
-                                        gimbalController.start()
-                                        controllerConnected = true
+                                        gimbalControllerRef.start()
                                     }
                                 }
                             }
                             Button {
                                 text: ros2TopicSubscriber.running ? "ROS2 ON" : "ROS2 OFF"
                                 Layout.alignment: Qt.AlignRight
-                                Layout.preferredWidth: 65
-                                Layout.preferredHeight: 25
+                                Layout.preferredWidth: 85
+                                Layout.preferredHeight: 30
                                 font.bold: true
-                                font.pixelSize: 9
+                                font.pixelSize: 12
                                 background: Rectangle {
-                                    implicitWidth: 65
-                                    implicitHeight: 25
-                                    radius: 15 
+                                    implicitWidth: 85
+                                    implicitHeight: 30
+                                    radius: 10
                                     border.color: ros2TopicSubscriber.running ? "#5cafff" : "#ff5c5c"
                                     border.width: 2
                                     gradient: Gradient {

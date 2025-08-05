@@ -7,7 +7,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include <sensor_msgs/msg/compressed_image.hpp>
 #include <opencv2/opencv.hpp>
-#include <QImage>
 
 #include "gimbal/gimbal_status.hpp"
 
@@ -80,10 +79,6 @@ void resize_compress_then_publish(
     int quality = 75
 );
 
-QImage mat_to_qimage(
-    const cv::Mat & mat
-);
-
 }  // namespace gimbal
 
 namespace gimbal_action
@@ -97,5 +92,10 @@ namespace gimbal_action
         double from_deg, 
         double to_deg, 
         double test_deg
+    );
+
+    // Normalize angle to [-180, 180) degrees
+    double normalize_angle(
+        double angle_deg
     );
 } // namespace gimbal_action

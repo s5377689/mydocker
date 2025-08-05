@@ -16,7 +16,7 @@ RUN apt-get update -y && apt-get install -y wget gnupg lsb-release && \
 # 安裝 apt其他相關套件
 RUN apt-get update && apt-get install -y git libxcb-xinerama0 libxcb-xinerama0-dev libreadline-dev \
     libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 \
-    gedit sudo\
+    gedit sudo libxcb-xinerama0 libxcb-cursor0\
     && echo 'export QT_X11_NO_MITSHM=1' >> /home/$USERNAME/.bashrc \
     && echo 'export QT_XCB_GL_INTEGRATION=xcb_glx' >> /home/$USERNAME/.bashrc \
     && rm -rf /var/lib/apt/lists/*
@@ -135,7 +135,7 @@ RUN cd /home/$USERNAME/install && \
 # 安裝浮力波浪插件 gz_maritime_ws
 USER root
 
-RUN apt-get update && apt-get install -y python3-pip wget unzip \
+RUN apt-get update && apt-get install -y wget unzip \
     && pip3 install -U colcon-common-extensions \
     && wget https://raw.githubusercontent.com/gazebosim/gz-sim/gz-sim8/tutorials/files/surface_vehicles/gz_maritime_ws.zip \
            -O /home/$USERNAME/install/gz_maritime_ws.zip \
@@ -153,6 +153,22 @@ COPY --chown=user:user 6.8.3/gcc_64 /home/$USERNAME/install/qt6.8.3
 ENV PATH="/home/$USERNAME/install/qt6.8.3/bin:$PATH"
 # ENV CMAKE_PREFIX_PATH="/home/$USERNAME/install/qt6.8.3"
 ENV CMAKE_PREFIX_PATH="/home/$USERNAME/install/qt6.8.3:/home/$USERNAME/.local${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
+
+# 下載 mavlink
+WORKDIR /home/$USERNAME/install
+RUN git clone https://github.com/mavlink/mavlink.git --recursive \
+&& cd mavlink \
+&& python3 -m pip install -r pymavlink/requirements.txt \
+&& python3 -m pymavlink.tools.mavgen --lang=C --wire-protocol=2.0 \
+      --output=generated/include/mavlink/v2.0 \
+      message_definitions/v1.0/common.xml \
+&& cmake -Bbuild -H. -DCMAKE_INSTALL_PREFIX=install -DMAVLINK_DIALECT=common -DMAVLINK_VERSION=2.0 \
+&& cmake --build build --target install \
+&& mkdir -p /home/$USERNAME/install/include/mavlink \
+&& cp -r /home/$USERNAME/install/mavlink/generated/include/mavlink/v2.0/* /home/$USERNAME/install/include/mavlink/
+
+ENV MAVLINK_INCLUDE_DIR=/home/$USERNAME/install/include
+
 
 # 複製 ros2_ws 到容器中
 COPY --chown=user:user ros2_ws /home/$USERNAME/ros2_ws

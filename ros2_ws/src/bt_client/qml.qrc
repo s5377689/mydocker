@@ -1,10 +1,30 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/main.qml</file>
+        <file>qml/NodePalette.qml</file>
+        <file>qml/BtVisualizer.qml</file>
+        <file>qml/NavigationPanel.qml</file>
+        <file>qml/MissionEditPanel.qml</file>
         <file>qml/GimbalControlPanel.qml</file>
         <file>qml/MovableNode.qml</file>
-    </qresource>
-    <qresource prefix="/">
+        <file>qml/CommandLineWindow.qml</file>
+        <file>qml/MavlinkPanel.qml</file>
+
+        <file>qml/BtUtils.js</file>
+        <file>qml/LayoutUtils.js</file>
+        <file>qml/TranslationUtils.js</file>
+
         <file>resources/logo.jpg</file>
+
+        <!-- Icons -->
+        <file>icons/fune.png</file>
+        <file>icons/marker.png</file>
+        <file>icons/action_icon.png</file>
+        <file>icons/control_icon.png</file>
+        <file>icons/decorator_icon.png</file>
+        <file>icons/condition_icon.png</file>
+        <file>icons/rearrange.png</file>
+        <file>icons/root_icon.png</file>
+        <file>icons/default_icon.png</file>
     </qresource>
 </RCC>

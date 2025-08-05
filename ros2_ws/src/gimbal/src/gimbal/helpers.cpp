@@ -356,28 +356,6 @@ void resize_compress_then_publish(
     pub->publish(msg);
 }
 
-QImage mat_to_qimage(
-    const cv::Mat & mat)
-{
-    if (mat.type() == CV_8UC3)
-        return QImage(
-            mat.data,
-            mat.cols,
-            mat.rows,
-            // static_cast<int>(mat.step[0]),
-            mat.step,
-            QImage::Format_BGR888).copy();
-    else if (mat.type() == CV_8UC1)
-            return QImage(
-                mat.data,
-                mat.cols,
-                mat.rows,
-                static_cast<int>(mat.step[0]),
-                QImage::Format_Grayscale8).copy();
-    else
-        throw std::runtime_error("Unsupported cv::Mat type for conversion to QImage");
-}
-
 }  // namespace gimbal
 
 namespace gimbal_action
@@ -402,5 +380,16 @@ namespace gimbal_action
         double full_sector = clockwise_diff(from_deg, to_deg);
         double test_sector = clockwise_diff(from_deg, test_deg);
         return test_sector <= full_sector;
+    }
+
+    double normalize_angle(
+        double angle_deg)
+    {
+        // Normalize angle to [-180, 180) degrees
+        while (angle_deg < -180.0)
+            angle_deg += 360.0;
+        while (angle_deg >= 180.0)
+            angle_deg -= 360.0;
+        return angle_deg;
     }
 }  // namespace gimbal_action

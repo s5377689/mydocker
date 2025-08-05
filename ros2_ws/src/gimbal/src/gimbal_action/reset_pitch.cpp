@@ -17,7 +17,7 @@ void ResetPitch::run()
             auto cmd = gimbal::buildYawPitchVelocityCommand(0.0, 0.0);
             gimbal_controller_.enqueueCommand(cmd);
             std::cout << "[ResetPitch] Action completed." << std::endl;
-            break;
+            return;
         }
 
 
@@ -45,8 +45,12 @@ void ResetPitch::run()
         auto cmd = gimbal::buildYawPitchVelocityCommand(0.0, pitch_speed);
         gimbal_controller_.enqueueCommand(cmd);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));  // 5 Hz
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+
+    auto cmd = gimbal::buildYawPitchVelocityCommand(0.0, 0.0);
+    gimbal_controller_.enqueueCommand(cmd);
+    std::cout << "[ResetPitch] Action halted." << std::endl;
 }
 
 }  // namespace gimbal_action

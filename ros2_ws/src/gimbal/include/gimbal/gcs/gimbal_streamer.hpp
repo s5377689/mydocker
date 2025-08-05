@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include <QObject>
+#include <QImage>
 #include <opencv2/opencv.hpp>
 #include "rclcpp/rclcpp.hpp"
 #include <sensor_msgs/msg/compressed_image.hpp>
@@ -28,6 +29,10 @@ namespace gimbal::gcs
 class GimbalStreamer : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool connected READ isConnected NOTIFY connectionChanged)
+
+signals:
+    void connectionChanged();
 
 public:
     GimbalStreamer(
@@ -51,6 +56,9 @@ public:
 
 private:
     void captureLoop();
+    QImage mat_to_qimage(
+        const cv::Mat & mat
+    );
     
     GimbalImageProvider * img_provider_ {nullptr};
     std::string rtsp_url_;

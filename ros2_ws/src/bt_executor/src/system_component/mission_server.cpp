@@ -13,6 +13,7 @@ MissionServer::MissionServer(
     bt_id_(""),
     bt_status_(BT::NodeStatus::IDLE),
     status_xml_(""),
+    result_msg_(std::make_shared<std::string>("")),
     goal_handle_(nullptr),
     eo_rtsp_url_("rtsp://192.168.144.25:8554/main.264"),
     // ir_rtsp_url_("rtsp://192.168.144.6:8554"),
@@ -22,12 +23,12 @@ MissionServer::MissionServer(
     using namespace std::placeholders;
 
     // Create the gimbal camera streamers
-    gimbal_eo_streamer_ = std::make_shared<gimbal::GimbalStreamer>(
+    gimbal_eo_streamer_ = std::make_shared<gimbal::usv::GimbalStreamer>(
         eo_rtsp_url_, "/camera/compressed/image_raw", 0.25f
     );
 
     // Create the gimbal controller
-    gimbal_controller_ = std::make_shared<gimbal::GimbalController>(
+    gimbal_controller_ = std::make_shared<gimbal::usv::GimbalController>(
         gimbal_control_ip_, gimbal_control_port_
     );
 
@@ -50,8 +51,11 @@ MissionServer::MissionServer(
     factory_.registerNodeType<bt_action::Navigate>("Navigate");
     factory_.registerNodeType<bt_action::RegisterTarget>("RegisterTarget");
     factory_.registerNodeType<bt_action::Search>("Search");
+    factory_.registerNodeType<bt_action::NavigateWhileSearch>("NavigateWhileSearch");
     factory_.registerNodeType<bt_action::StopGimbalControl>("StopGimbalControl");
     factory_.registerNodeType<bt_action::ResumeGimbalControl>("ResumeGimbalControl");
+    factory_.registerNodeType<bt_action::TakePhoto>("TakePhoto");
+    factory_.registerNodeType<bt_action::Zigzag>("Zigzag");
 
     std::string xml_models = BT::writeTreeNodesModelXML(factory_);
     write_xml_file("/home/robuff/data/bt/tree_nodes_model.xml", xml_models);
@@ -147,6 +151,15 @@ void MissionServer::execute(
         // -------------------------------------------
         //            BT Node Initialization 
         // -------------------------------------------
+        // Base initialize the BtNode with the result message
+        auto base_visitor = [this](BT::TreeNode* node)
+        {
+            if (auto bt_node = dynamic_cast<bt_action::BtNode*>(node))
+            {
+                bt_node->baseInitialize(result_msg_, goal_handle_);
+            }
+        };
+
         // Pass references to initialize data members for each type of nodes
         auto visitor = [this](BT::TreeNode* node)
         {
@@ -158,14 +171,14 @@ void MissionServer::execute(
             {
                 search_node->initialize(registry_, gimbal_eo_streamer_, gimbal_controller_);
             }
-            // else if (auto nav_search_node = dynamic_cast<NavigateWhileSearch*>(node))
-            // {
-            //     nav_search_node->initialize(registry_, gimbal_eo_streamer_, gimbal_controller_);
-            // }
-            // else if (auto take_photo_node = dynamic_cast<TakePhoto*>(node))
-            // {
-            //     take_photo_node->initialize(gimbal_eo_streamer_);
-            // }
+            else if (auto nav_search_node = dynamic_cast<bt_action::NavigateWhileSearch*>(node))
+            {
+                nav_search_node->initialize(registry_, gimbal_eo_streamer_, gimbal_controller_);
+            }
+            else if (auto take_photo_node = dynamic_cast<bt_action::TakePhoto*>(node))
+            {
+                take_photo_node->initialize(gimbal_eo_streamer_);
+            }
             else if (auto stop_gimbal_node = dynamic_cast<bt_action::StopGimbalControl*>(node))
             {
                 stop_gimbal_node->initialize(gimbal_controller_);
@@ -183,7 +196,9 @@ void MissionServer::execute(
             //     resume_gimbal_streamer_node->initialize(gimbal_eo_streamer_);
             // }
         };
+        tree_->applyVisitor(base_visitor);
         tree_->applyVisitor(visitor);
+        *result_msg_ = "";
 
         // -------------------------------------------
         //    Resume previos BT status if provided 
@@ -196,12 +211,24 @@ void MissionServer::execute(
 
     }
     catch (const std::exception & e) {
-        RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "Exception during BT tree creation: %s", e.what());
+        std::string result_msg = "Failed to create BT tree: " + std::string(e.what());
+        RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "%s", result_msg.c_str());
+        auto result = std::make_shared<ActionT::Result>();
+        result->success = false;
+        result->message = result_msg;
+        goal_handle_->abort(result);
+
         resetBt();
         return;
     }
     catch (...) {
-        RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "Unknown exception during BT tree creation.");
+        std::string result_msg = "Failed to create BT tree: Unknown error";
+        RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "%s", result_msg.c_str());
+        auto result = std::make_shared<ActionT::Result>();
+        result->success = false;
+        result->message = result_msg;
+        goal_handle_->abort(result);
+
         resetBt();
         return;
     }
@@ -224,7 +251,7 @@ void MissionServer::execute(
                 result->success = false;
                 goal_handle->canceled(result);
 
-                RCLCPP_WARN(rclcpp::get_logger("mission_server"), "-- Mission canceled --");
+                RCLCPP_WARN(rclcpp::get_logger("mission_server"), "-- Mission cancelled --");
                 resetBt();
                 return;
             }
@@ -233,11 +260,27 @@ void MissionServer::execute(
         }
         catch (const std::exception & e)
         {
-            RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "Exception during BT execution: %s", e.what());
+            std::string result_msg = "Exception during BT execution: " + std::string(e.what());
+            RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "%s", result_msg.c_str());
+            auto result = std::make_shared<ActionT::Result>();
+            result->success = false;
+            result->message = result_msg;
+            goal_handle_->abort(result);
+
+            resetBt();
+            return;
         }
         catch (...)
         {
-            RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "Unknown exception during BT execution");
+            std::string result_msg {"Unknown exception during BT execution"};
+            RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "%s", result_msg.c_str());
+            auto result = std::make_shared<ActionT::Result>();
+            result->success = false;
+            result->message = result_msg;
+            goal_handle_->abort(result);
+
+            resetBt();
+            return;
         }
     }
 
@@ -250,12 +293,14 @@ void MissionServer::execute(
         {
             RCLCPP_INFO(rclcpp::get_logger("mission_server"), "-- Mission succeeded --");
             result->success = true;
+            result->message = *result_msg_;
             goal_handle->succeed(result);
         }
         else
         {
             RCLCPP_WARN(rclcpp::get_logger("mission_server"), "-- Mission failed --");
             result->success = false;
+            result->message = *result_msg_;
             goal_handle->abort(result);
         }
 
@@ -263,12 +308,24 @@ void MissionServer::execute(
     }
     catch (const std::exception & e)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "Exception during result processing: %s", e.what());
+        std::string result_msg = "Exception during result processing: " + std::string(e.what());
+        RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "%s", result_msg.c_str());
+        auto result = std::make_shared<ActionT::Result>();
+        result->success = false;
+        result->message = result_msg;
+        goal_handle_->abort(result);
+
         resetBt();
     }
     catch (...)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "Unknown exception during result processing");
+        std::string result_msg {"Unknown exception during result processing"};
+        RCLCPP_ERROR(rclcpp::get_logger("mission_server"), "%s", result_msg.c_str());
+        auto result = std::make_shared<ActionT::Result>();
+        result->success = false;
+        result->message = result_msg;
+        goal_handle_->abort(result);
+
         resetBt();
     }
 }

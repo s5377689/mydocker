@@ -4,7 +4,7 @@ namespace bt_action
 {
 
 void StopGimbalControl::initialize(
-    std::shared_ptr<gimbal::GimbalController> gimbal_controller)
+    std::shared_ptr<gimbal::usv::GimbalController> gimbal_controller)
 {
     gimbal_controller_ = gimbal_controller;
 }

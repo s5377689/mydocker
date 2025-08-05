@@ -32,6 +32,7 @@ void GimbalController::start() {
         return;
 
     connected_ = connectToGimbal();
+    emit connectionChanged();  // to inform QML to reflect the connection state in UI
     if (!connected_) {
         std::cerr << "[GimbalController] Failed to start gimbal client." << std::endl;
         return;
@@ -62,6 +63,7 @@ void GimbalController::stop() {
     if (connected_) {
         close(sockfd_);
         connected_ = false;
+        emit connectionChanged();
         std::cout << "[GimbalController] Connection to gimbal has been closed." << std::endl;
     }
 
@@ -96,6 +98,7 @@ void GimbalController::receiveLoop()
             }
             else
                 connected_ = true;
+                emit connectionChanged();
         }
 
         // Receive status
@@ -145,6 +148,7 @@ void GimbalController::sendLoop()
             if (sent < 0) {
                 std::cerr << "[GimbalController] Failed to send command: " << strerror(errno) << std::endl;
                 connected_ = false;
+                emit connectionChanged();
                 reconnect(3);
             }
 

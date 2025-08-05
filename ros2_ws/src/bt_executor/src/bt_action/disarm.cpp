@@ -20,7 +20,11 @@ void Disarm::run_action_()
             return;
         }
         if (std::chrono::steady_clock::now() - start_time > std::chrono::seconds(timeout_)) {
-            RCLCPP_ERROR(this->get_logger(), "Service not available after waiting for %d seconds", timeout_);
+            std::string result_msg {
+                "Arm motors service not available after waiting for " + std::to_string(timeout_) + " seconds."
+            };
+            RCLCPP_ERROR(this->get_logger(), "%s", result_msg.c_str());
+            *result_msg_ = result_msg;
             status_ = BT::NodeStatus::FAILURE;
             return;
         }

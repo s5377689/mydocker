@@ -50,12 +50,8 @@ ament_target_dependencies(gimbal_helpers
     OpenCV
     cv_bridge
 )
-target_link_libraries(gimbal_helpers
-    Qt6::Gui
-)
 
 # --- gcs_gimbal_controller library ---
-# Use qt_add_library to automatically handle MOC
 qt_add_library(gcs_gimbal_controller STATIC 
     src/gimbal/gcs/gimbal_controller.cpp
     include/gimbal/gcs/gimbal_controller.hpp
@@ -75,7 +71,6 @@ ament_target_dependencies(gcs_gimbal_controller
 )
 
 # --- gcs_gimbal_streamer library ---
-# Use qt_add_library to automatically handle MOC
 qt_add_library(gcs_gimbal_streamer STATIC
     src/gimbal/gcs/gimbal_streamer.cpp
     include/gimbal/gcs/gimbal_streamer.hpp
@@ -109,9 +104,10 @@ target_link_libraries(
     ${FFMPEG_LIBRARIES}
     Qt6::Core
     Qt6::Quick
+    Qt6::Gui
 )
 
-# --- gimbal_image_provider ---
+# --- gimbal_image_provider library ---
 qt_add_library(gimbal_image_provider STATIC
     src/gimbal/gcs/gimbal_image_provider.cpp
 )
@@ -143,6 +139,39 @@ ament_target_dependencies(usv_gimbal_controller
     OpenCV
 )
 
+# --- usv_gimbal_streamer library ---
+add_library(usv_gimbal_streamer
+  src/gimbal/usv/gimbal_streamer.cpp
+)
+target_include_directories(usv_gimbal_streamer
+    PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include>
+)
+pkg_check_modules(FFMPEG REQUIRED
+  libavformat
+  libavcodec
+  libavutil
+  libswscale
+)
+ament_target_dependencies(
+  usv_gimbal_streamer
+    OpenCV
+    cv_bridge
+    rclcpp
+    sensor_msgs
+)
+target_include_directories(
+  usv_gimbal_streamer
+  PRIVATE
+    ${FFMPEG_INCLUDE_DIRS}
+)
+target_link_libraries(
+  usv_gimbal_streamer
+    gimbal_helpers
+    ${FFMPEG_LIBRARIES}
+)
+
 # --- gimbal_action library --- (Used by mission server to enqueue gimbal actions)
 add_library(gimbal_action
     src/gimbal_action/lock_on.cpp
@@ -151,6 +180,7 @@ add_library(gimbal_action
     src/gimbal_action/reset_zoom.cpp
     src/gimbal_action/scan.cpp
     src/gimbal_action/set_zoom.cpp
+    src/gimbal_action/multiply_zoom.cpp
 )
 target_include_directories(gimbal_action
     PUBLIC
@@ -170,6 +200,7 @@ install(
     gcs_gimbal_streamer
     gimbal_image_provider
     usv_gimbal_controller
+    usv_gimbal_streamer
     gimbal_action
   EXPORT export_gimbal
   LIBRARY DESTINATION lib
@@ -218,7 +249,7 @@ install(FILES
     DESTINATION lib/cmake/gimbal
 )
 
-# Install the targets file (this is what was missing!)
+# Install the targets file
 install(EXPORT export_gimbal
     FILE gimbalTargets.cmake
     NAMESPACE gimbal::

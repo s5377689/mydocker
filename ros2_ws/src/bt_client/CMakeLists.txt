@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(Qt6 REQUIRED COMPONENTS
     Core
     Quick
+    QuickControls2
     Qml
     Gui
     Xml
@@ -32,40 +33,69 @@ find_package(OpenCV REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(gimbal REQUIRED)
+#find_package(MAVLink REQUIRED)  # LLL
 
 include_directories(include)
+include_directories($ENV{MAVLINK_INCLUDE_DIR}) # LLL
+
+# --- Helpers ---
+add_library(
+    helpers
+    src/helpers.cpp
+)
+target_link_libraries(
+    helpers PRIVATE
+        Qt6::Core
+        Qt6::Xml
+)
 
 # --- BT Visualizer ---
-qt_add_executable(
+add_executable(
     bviz
         src/main.cpp
-        src/parser.cpp
-        src/btnode.cpp
+        src/bt_parser.cpp
+        src/tree_nodes_model_parser.cpp
+        src/bt_node.cpp
         src/ros_bridge.cpp
         src/ros2_topic_subscriber.cpp
         src/ros2_image_provider.cpp
-        include/btnode.h
-        include/parser.h
-        include/ros_bridge.h
+        src/qml_cli.cpp
+        src/mavlink_client.cpp
+        src/vehicle_tracker.cpp
+        src/file_manager.cpp
+        include/bt_node.hpp
+        include/bt_parser.hpp
+        include/tree_nodes_model_parser.hpp
+        include/ros_bridge.hpp
         include/ros2_topic_subscriber.hpp
         include/ros2_image_provider.hpp
-)
-target_include_directories(
-    bviz PUBLIC
-        ${rclcpp_INCLUDE_DIRS}
+        include/qml_cli.hpp
+        include/mavlink_client.hpp
+        include/vehicle_tracker.hpp
+        include/file_manager.hpp
 )
 target_link_libraries(
-    bviz PRIVATE
+    bviz 
         Qt6::Core
         Qt6::Gui
         Qt6::Qml
         Qt6::Quick
+        Qt6::QuickControls2
         Qt6::Xml
-        ${rclcpp_LIBRARIES}
-        ${std_msgs_LIBRARIES}
         gimbal::gcs_gimbal_controller
         gimbal::gcs_gimbal_streamer
         gimbal::gimbal_image_provider
+        helpers
+        #MAVLink::mavlink	# LLL
+)
+ament_target_dependencies(
+    bviz
+        rclcpp
+        rclcpp_action
+        behaviortree_cpp
+        std_msgs
+        std_srvs
+        custom_msgs
 )
 qt_add_resources(QML_RESOURCES qml.qrc)
 target_sources(
@@ -74,29 +104,28 @@ target_sources(
 )
 
 # --- Command Line Interface ---
-add_executable(
-    cli
-    src/cli.cpp
-)
-ament_target_dependencies(
-  cli
-    rclcpp
-    rclcpp_action
-    behaviortree_cpp
-    ament_index_cpp
-    custom_msgs
-    geometry_msgs
-    std_srvs
-)
-target_link_libraries(
-  cli
-    readline
-)
+# add_executable(
+#     cli
+#     src/cli.cpp
+# )
+# ament_target_dependencies(
+#   cli
+#     rclcpp
+#     rclcpp_action
+#     behaviortree_cpp
+#     ament_index_cpp
+#     custom_msgs
+#     geometry_msgs
+#     std_srvs
+# )
+# target_link_libraries(
+#   cli
+#     readline
+# )
 
 install(
     TARGETS
         bviz
-        cli
     DESTINATION
         lib/${PROJECT_NAME}
 )

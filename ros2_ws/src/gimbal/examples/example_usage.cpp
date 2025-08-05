@@ -30,13 +30,13 @@ public:
         //     nullptr, "192.168.1.100", 37260);
         
         // Create gimbal streamer (requires Qt parent, so this is just an example)  
-        // gimbal_streamer_ = std::make_unique<gimbal::GimbalStreamer>(
+        // gimbal_streamer_ = std::make_unique<gimbal::usv::GimbalStreamer>(
         //     nullptr, "rtsp://192.168.1.100:8554/stream");
     }
 
 private:
     // std::unique_ptr<gimbal::usv::GimbalController> gimbal_controller_;
-    // std::unique_ptr<gimbal::GimbalStreamer> gimbal_streamer_;
+    // std::unique_ptr<gimbal::usv::GimbalStreamer> gimbal_streamer_;
 };
 
 int main(int argc, char * argv[])

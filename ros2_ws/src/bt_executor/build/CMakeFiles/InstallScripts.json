@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/robuff/src_codes/robuff_ws/src/bt_executor/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

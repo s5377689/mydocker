@@ -1,0 +1,160 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-ba81ccbd034354f47434.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "bt_executor",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "bt_action::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-bt_action-Debug-935756bb620e2362ebb4.json",
+					"name" : "bt_action",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "bt_action_helpers::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-bt_action_helpers-Debug-25a520f5c0ee5b030c11.json",
+					"name" : "bt_action_helpers",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "bt_executor_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-bt_executor_uninstall-Debug-ec0c80ee806d6362bcb4.json",
+					"name" : "bt_executor_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gimbal_action::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gimbal_action-Debug-42fd91f126bd443f575b.json",
+					"name" : "gimbal_action",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gimbal_action_helpers::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gimbal_action_helpers-Debug-1b98d177411f9d4a91d0.json",
+					"name" : "gimbal_action_helpers",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gimbal_controller::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gimbal_controller-Debug-b8a83d8c61521702181f.json",
+					"name" : "gimbal_controller",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gimbal_helpers::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gimbal_helpers-Debug-38cf3496fe33a13bb2a6.json",
+					"name" : "gimbal_helpers",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gimbal_streamer::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gimbal_streamer-Debug-3cb5ca3702a5633f31b7.json",
+					"name" : "gimbal_streamer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mission_server::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mission_server-Debug-51c6a8c9b0bc86d67446.json",
+					"name" : "mission_server",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "system_component_helpers::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-system_component_helpers-Debug-7fc40dd74a9107debb76.json",
+					"name" : "system_component_helpers",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "target_registry::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-target_registry-Debug-a28f67df067e1bf325cf.json",
+					"name" : "target_registry",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Debug-744843b15089683457f6.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/robuff/src_codes/robuff_ws/src/bt_executor/build",
+		"source" : "/home/robuff/src_codes/robuff_ws/src/bt_executor"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 8
+	}
+}

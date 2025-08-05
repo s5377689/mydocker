@@ -4,7 +4,7 @@
 #include <thread>
 #include <chrono>
 #include "bt_action/bt_node.hpp"
-#include "gimbal/gimbal_controller.hpp"
+#include "gimbal/usv/gimbal_controller.hpp"
 
 
 namespace bt_action
@@ -19,11 +19,11 @@ public:
     ):
         BtNode(name, config) {}
     static BT::PortsList providedPorts() { return {}; }
-    void initialize(std::shared_ptr<gimbal::GimbalController>);
+    void initialize(std::shared_ptr<gimbal::usv::GimbalController>);
 protected:
     void run_action_() override;
 private:
-    std::weak_ptr<gimbal::GimbalController> gimbal_controller_;
+    std::weak_ptr<gimbal::usv::GimbalController> gimbal_controller_;
 };
 
 }  // namespace bt_action

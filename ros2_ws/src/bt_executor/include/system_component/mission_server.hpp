@@ -13,8 +13,8 @@
 #include "std_msgs/msg/string.hpp"
 
 #include "system_component/target_registry.hpp"
-#include "gimbal/gimbal_streamer.hpp"
-#include "gimbal/gimbal_controller.hpp"
+#include "gimbal/usv/gimbal_streamer.hpp"
+#include "gimbal/usv/gimbal_controller.hpp"
 #include "custom_msgs/action/behavior_tree.hpp"
 #include "custom_msgs/srv/get_target_list.hpp"
 
@@ -79,6 +79,8 @@ private:
     std::shared_ptr<BT::Tree> tree_;
     std::shared_ptr<GoalHandle> goal_handle_;
 
+    std::shared_ptr<std::string> result_msg_;
+
     // ---------------------------------------
     //   Target management (needed by <Search>)
     // ---------------------------------------
@@ -96,11 +98,11 @@ private:
     // void resumeGimbalControl();
 
     // Gimbal camera streams
-    std::shared_ptr<gimbal::GimbalStreamer> gimbal_eo_streamer_;
+    std::shared_ptr<gimbal::usv::GimbalStreamer> gimbal_eo_streamer_;
     std::string eo_rtsp_url_;
 
     // Gimbal controller
-    std::shared_ptr<gimbal::GimbalController> gimbal_controller_; 
+    std::shared_ptr<gimbal::usv::GimbalController> gimbal_controller_; 
     std::string gimbal_control_ip_;
     int gimbal_control_port_;
 };

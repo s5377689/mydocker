@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.15)
 project(bt_executor)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -21,73 +21,39 @@ find_package(OpenCV REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(custom_msgs REQUIRED)
-
+find_package(gimbal REQUIRED)
 
 include_directories(include)
-
-# --- gimbal_helpers ---
-add_library(
-  gimbal_helpers
-    src/gimbal/helpers.cpp
-)
-ament_target_dependencies(
-  gimbal_helpers
-    rclcpp
-    sensor_msgs
-    OpenCV
-    cv_bridge
-)
-
-# --- gimbal_action_helpers ---
-add_library(
-  gimbal_action_helpers
-    src/gimbal_action/helpers.cpp
-)
-
-# --- gimbal_action ---
-add_library(
-  gimbal_action
-    # src/gimbal_action/lock_on.cpp
-    src/gimbal_action/look_at.cpp
-    src/gimbal_action/reset_pitch.cpp
-    src/gimbal_action/reset_zoom.cpp
-    src/gimbal_action/set_zoom.cpp
-    src/gimbal_action/scan.cpp
-    # src/gimbal_action/dynamic_scan.cpp
-    # src/gimbal_action/sequence.cpp
-    # src/gimbal_action/zoomin_max.cpp
-    # src/gimbal_action/lock_on_while_zoomin.cpp
-    # src/gimbal_action/look_at_while_zoomin.cpp
-    src/gimbal/gimbal_controller.cpp
-)
-ament_target_dependencies(
-  gimbal_action
-    rclcpp
-    behaviortree_cpp
-    geographic_msgs
-    OpenCV
-    cv_bridge
-    ardupilot_msgs
-)
-target_link_libraries(
-  gimbal_action
-    gimbal_action_helpers
-)
 
 # --- bt_action_helpers ---
 add_library(
   bt_action_helpers
-    src/bt_action/helpers.cpp
+    src/bt_action/common_helpers.cpp
+)
+
+# --- navigate_helpers ---
+add_library(
+  navigate_helpers
+    src/bt_action/navigate_helpers.cpp
 )
 ament_target_dependencies(
-  bt_action_helpers
-    rclcpp
-    rclcpp_action
-    behaviortree_cpp
+  navigate_helpers
     sensor_msgs
     geometry_msgs
     ardupilot_msgs
     geographic_msgs
+)
+
+# --- search_helpers ---
+add_library(
+  search_helpers
+    src/bt_action/search_helpers.cpp
+)
+ament_target_dependencies(
+  search_helpers
+    rclcpp
+    sensor_msgs
+    ardupilot_msgs
     OpenCV
     cv_bridge
 )
@@ -95,7 +61,6 @@ ament_target_dependencies(
 # --- bt_action ---
 add_library(
   bt_action
-    src/bt_action/helpers.cpp
     src/bt_action/bt_node.cpp
     src/bt_action/arm.cpp
     src/bt_action/disarm.cpp
@@ -104,8 +69,11 @@ add_library(
     src/bt_action/navigate.cpp
     src/bt_action/register_target.cpp
     src/bt_action/search.cpp
+    src/bt_action/navigate_while_search.cpp
     src/bt_action/stop_gimbal_control.cpp
     src/bt_action/resume_gimbal_control.cpp
+    src/bt_action/take_photo.cpp
+    src/bt_action/zigzag.cpp
 )
 ament_target_dependencies(
   bt_action
@@ -116,56 +84,18 @@ ament_target_dependencies(
     geometry_msgs
     ardupilot_msgs
     geographic_msgs
+    custom_msgs
     OpenCV
     cv_bridge
 )
 target_link_libraries(
   bt_action
     bt_action_helpers
-    gimbal_action
-)
-
-# --- gimbal_streamer ---
-add_library(
-  gimbal_streamer
-    src/gimbal/gimbal_streamer.cpp
-)
-pkg_check_modules(FFMPEG REQUIRED
-  libavformat
-  libavcodec
-  libavutil
-  libswscale
-)
-ament_target_dependencies(
-  gimbal_streamer
-    OpenCV
-    cv_bridge
-    rclcpp
-    sensor_msgs
-)
-target_include_directories(
-  gimbal_streamer
-  PRIVATE
-    ${FFMPEG_INCLUDE_DIRS}
-)
-target_link_libraries(
-  gimbal_streamer
-    gimbal_helpers
-    ${FFMPEG_LIBRARIES}
-)
-
-# --- gimbal_controller ---
-add_library(
-  gimbal_controller
-    src/gimbal/gimbal_controller.cpp
-)
-ament_target_dependencies(
-  gimbal_controller
-    OpenCV
-)
-target_link_libraries(
-  gimbal_controller
-    gimbal_helpers
+    navigate_helpers
+    search_helpers
+    gimbal::gimbal_action
+    gimbal::usv_gimbal_streamer
+    gimbal::usv_gimbal_controller
 )
 
 # --- system_component_helpers ---
@@ -221,8 +151,8 @@ target_link_libraries(
     system_component_helpers
     bt_action
     target_registry
-    gimbal_streamer
-    gimbal_controller
+    gimbal::usv_gimbal_streamer
+    gimbal::usv_gimbal_controller
 )
 
 # ----------------------------

@@ -16,7 +16,15 @@ BtNode::~BtNode()
     if (action_thread_.joinable()) {
         action_thread_.join();
     }
-    RCLCPP_INFO(this->get_logger(), "BT Action thread has exited.");
+    RCLCPP_INFO(this->get_logger(), "BtNode Destructor called. BtNode action thread has exited.");
+}
+
+void BtNode::baseInitialize(
+    std::shared_ptr<std::string> result_msg,
+    std::shared_ptr<GoalHandle> goal_handle)
+{
+    result_msg_ = result_msg;
+    goal_handle_ = goal_handle;
 }
 
 BT::NodeStatus BtNode::onStart()
@@ -38,6 +46,11 @@ void BtNode::onHalted()
 {
     halt_requested_ = true;
     status_ = BT::NodeStatus::IDLE;
+
+    if (action_thread_.joinable()) {
+        action_thread_.join();
+    }
+    RCLCPP_INFO(this->get_logger(), "Halt requested. BtNode action thread has exited.");
 }
 
 }  // namespace bt_action

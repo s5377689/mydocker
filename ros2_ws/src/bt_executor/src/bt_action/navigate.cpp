@@ -18,6 +18,7 @@ Navigate::Navigate(
     longitude_(0.0),
     altitude_(0.0)
 {
+    // Navigation GPS publisher and subscriber
     gps_pub_ = this->create_publisher<ardupilot_msgs::msg::GlobalPosition>(
         "/ap/cmd_gps_pose",
         10
@@ -31,6 +32,12 @@ Navigate::Navigate(
         "/ap/geopose/filtered",
         qos,
         std::bind(&Navigate::geopose_callback, this, std::placeholders::_1)
+    );
+    
+    // Velocity command publisher
+    cmd_vel_pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>(
+        "/ap/cmd_vel",
+        10
     );
 }
 
@@ -89,15 +96,29 @@ void Navigate::run_action_()
         {
             gps_pub_->publish(dest);
         
-            if (reach_waypoint())
+            if (reach_waypoint(latitude_, longitude_, dest, torelance_meters_))
             {
-                RCLCPP_INFO(get_logger(), "Reach waypoint %zu", current_nav_idx_ + 1);
+                std::string feedback_msg {
+                    "Reached waypoint " + std::to_string(current_nav_idx_ + 1)
+                };
+                RCLCPP_INFO(get_logger(), "%s", feedback_msg.c_str());
+
+                // Publish feedback message
+                auto feedback = std::make_shared<ActionT::Feedback>();
+                feedback->running_node = "Navigate";
+                feedback->message = feedback_msg;
+                goal_handle_->publish_feedback(feedback);
+
                 ++current_nav_idx_;
 
                 // if all waypoints have been passed and target still not found, stop navigation
                 if (current_nav_idx_ >= nav_waypoints_.size())
                 {
-                    RCLCPP_INFO(get_logger(), "All waypoints have been passed.");
+                    std::string result_msg {
+                        "All waypoints have been passed."
+                    };
+                    RCLCPP_INFO(get_logger(), "%s", result_msg.c_str());
+                    *result_msg_ = result_msg;
                     status_ = BT::NodeStatus::SUCCESS;
                     break;
                 }
@@ -113,15 +134,15 @@ void Navigate::run_action_()
         RCLCPP_ERROR(get_logger(), "Exception during navigation: %s", e.what());
         halt_requested_ = true;
         status_ = BT::NodeStatus::FAILURE;
-        return;
     }
     catch (...)
     {
         RCLCPP_ERROR(get_logger(), "Unknown error occurred during navigation.");
         halt_requested_ = true;
         status_ = BT::NodeStatus::FAILURE;
-        return;
     }
+
+    publish_zero_velocity();  // Stop the vehicle when navigation is done or halted
 }
 
 void Navigate::geopose_callback(
@@ -132,17 +153,20 @@ void Navigate::geopose_callback(
     altitude_ = msg->pose.position.altitude;
 }
 
-bool Navigate::reach_waypoint(double tolerance_meters)
+void Navigate::publish_zero_velocity()
 {
-    if (current_nav_idx_ >= nav_waypoints_.size())
-        return true;
+    geometry_msgs::msg::TwistStamped zero_twist;
+    zero_twist.header.stamp = this->now();
+    zero_twist.header.frame_id = "base_link";
+    zero_twist.twist.linear.x = 0.0;
+    zero_twist.twist.linear.y = 0.0;
+    zero_twist.twist.linear.z = 0.0;
+    zero_twist.twist.angular.x = 0.0;
+    zero_twist.twist.angular.y = 0.0;
+    zero_twist.twist.angular.z = 0.0;
 
-    const auto & wp = nav_waypoints_[current_nav_idx_];
-
-    // Compute horizontal distance (in meters)
-    double horizon_dist = haversine(latitude_, longitude_, wp.latitude, wp.longitude);
-
-    return horizon_dist < tolerance_meters;
+    cmd_vel_pub_->publish(zero_twist);
+    RCLCPP_INFO(get_logger(), "Published zero velocity command to stop the vehicle.");
 }
 
 }  // namespace bt_action

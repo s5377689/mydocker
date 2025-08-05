@@ -8,7 +8,7 @@ namespace gimbal_action
 {
 
 Scan::Scan(
-    gimbal::GimbalController & gimbal_controller,
+    gimbal::usv::GimbalController & gimbal_controller,
     double yaw_from,
     double yaw_to,
     double speed

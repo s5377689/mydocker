@@ -12,6 +12,7 @@
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
   <depend>gimbal</depend>
+  <depend>custom_msgs</depend>
 
   <exec_depend>qt6-base-dev</exec_depend>
   <exec_depend>qt6-declarative-dev</exec_depend>

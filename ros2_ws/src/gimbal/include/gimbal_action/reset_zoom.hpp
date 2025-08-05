@@ -17,7 +17,7 @@ public:
     void run() override;
 
 private:
-    double zoom_tolerance_ {0.01};
+    double zoom_tolerance_ {0.1};
 };
 
 }  // namespace gimbal_action

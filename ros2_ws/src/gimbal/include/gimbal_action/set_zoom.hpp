@@ -20,7 +20,7 @@ public:
 
 private:
     double target_zoom_;
-    double zoom_tolerance_ {0.05};
+    double zoom_tolerance_ {0.45};
 };
 
 }  // namespace gimbal_action

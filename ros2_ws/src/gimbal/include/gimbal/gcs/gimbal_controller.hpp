@@ -31,9 +31,11 @@ class GimbalController : public QObject
     Q_PROPERTY(float yaw_velocity READ yaw_velocity NOTIFY gimbalStatusChanged)
     Q_PROPERTY(float pitch_velocity READ pitch_velocity NOTIFY gimbalStatusChanged)
     Q_PROPERTY(float zoom_level READ zoom_level NOTIFY gimbalStatusChanged)
+    Q_PROPERTY(bool connected READ isConnected NOTIFY connectionChanged)
 
 signals:
     void gimbalStatusChanged();
+    void connectionChanged();
 
 public:
     GimbalController(QObject *parent, const std::string & ip, uint16_t port);
@@ -41,8 +43,8 @@ public:
 
     // GimbalController lifecycle management
     Q_INVOKABLE void start();
-    Q_INVOKABLE inline bool isConnected() const { return connected_; }
     Q_INVOKABLE void stop();
+    inline bool isConnected() const { return connected_; }
 
     // ------------------------------
     //     QML Control interface
@@ -55,7 +57,6 @@ public:
         int16_t yaw_int = static_cast<int16_t>(std::round(yaw * 10));
         int16_t pitch_int = static_cast<int16_t>(std::round(pitch * 10));
         auto cmd = gimbal::buildRotateToCommand(yaw_int, pitch_int);
-        // std::cout << "[GimbalController] Enqueuing rotate command to yaw: " << yaw_int << ", pitch: " << pitch_int << std::endl;
         enqueueCommand(cmd);
     }
     Q_INVOKABLE inline void zoomIn() {

@@ -7,5 +7,8 @@
 #include "bt_action/navigate.hpp"
 #include "bt_action/register_target.hpp"
 #include "bt_action/search.hpp"
+#include "bt_action/navigate_while_search.hpp"
 #include "bt_action/stop_gimbal_control.hpp"
 #include "bt_action/resume_gimbal_control.hpp"
+#include "bt_action/take_photo.hpp"
+#include "bt_action/zigzag.hpp"

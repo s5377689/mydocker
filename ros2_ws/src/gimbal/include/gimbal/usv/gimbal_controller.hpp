@@ -23,7 +23,6 @@ namespace gimbal_action {
     class GimbalAction;
 }
 
-
 namespace gimbal::usv
 {
 
@@ -37,16 +36,20 @@ public:
     void start();
     bool isConnected() const { return connected_; }
     void stop();
-
-    // -------------------------
-    //     Control interface
-    // -------------------------
     void enqueueCommand(const std::vector<uint8_t> & cmd);
 
+    // --------------------------------------------
+    //     High-level Action Control interface
+    // --------------------------------------------
     void enqueueAction(std::shared_ptr<gimbal_action::GimbalAction> action);
     void interruptCurrentAction();
     void stopAndClearAllActions();
     void replaceWithAction(std::shared_ptr<gimbal_action::GimbalAction> action);
+    void update_lockon_bbox(cv::Rect bbox);   // Used when LockOn action is running
+    inline cv::Rect get_lockon_bbox() {
+        std::lock_guard<std::mutex> lock(lockon_bbox_mutex_);
+        return lockon_bbox_;
+    }
 
     void printActionQueue();
     void printCurrentAction();
@@ -57,13 +60,6 @@ public:
         std::lock_guard<std::mutex> lock(status_mutex_);
         return gimbal_status_;
     }
-    inline cv::Rect getCurrentBBox() {
-        std::lock_guard<std::mutex> lock(current_bbox_mutex_);
-        return current_bbox_;
-    }
-
-    // Setters
-    void updateBBox(cv::Rect bbox);  // for locking on a target
 
 private:
     void receiveLoop();
@@ -100,8 +96,8 @@ private:
     std::deque<std::shared_ptr<gimbal_action::GimbalAction>> action_queue_;
     std::shared_ptr<gimbal_action::GimbalAction> current_action_;
 
-    std::mutex current_bbox_mutex_;
-    cv::Rect current_bbox_;  // To enable lock on a target
+    std::mutex lockon_bbox_mutex_;
+    cv::Rect lockon_bbox_;               // To enable lock on a target
 
     std::mutex status_mutex_;
     gimbal::GimbalStatus gimbal_status_;
